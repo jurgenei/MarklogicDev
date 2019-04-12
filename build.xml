@@ -1,0 +1,84 @@
+<project name="tsql" basedir=".">
+    <description>
+        simple example build file using sqlxmlast task
+        its taskdef is a bit complicated
+    </description>
+    <property name="repo" location="C:/Users/cs79en.AD/.m2/repository"/>
+    <property name="saxon.class.path" value="${repo}/net/sf/saxon/Saxon-HE/9.6.0-7/Saxon-HE-9.6.0-7.jar"/>
+    <taskdef name="sqlxmlast" classname="com.ing.vortex.parsers.antlr.SqlXmlAstAntTask">
+        <classpath>
+            <pathelement location="${repo}/com/ing/vortex/parsers/antlr/plsql/1.0-SNAPSHOT/plsql-1.0-SNAPSHOT.jar"/>
+            <pathelement location="${repo}/com/ing/vortex/parsers/antlr/tsql/1.0-SNAPSHOT/tsql-1.0-SNAPSHOT.jar"/>
+            <pathelement location="${repo}/com/ing/vortex/parsers/antlr/ant-task/1.0-SNAPSHOT/ant-task-1.0-SNAPSHOT.jar"/>
+            <pathelement location="${repo}/org/antlr/antlr4-runtime/4.7.1/antlr4-runtime-4.7.1.jar"/>
+            <pathelement location="${repo}/org/glassfish/jaxb/txw2/2.2.11/txw2-2.2.11.jar"/>
+            <pathelement location="${repo}/commons-lang/commons-lang/2.5/commons-lang-2.5.jar"/>
+        </classpath>
+    </taskdef>
+    <target name="simple">
+        <xslt basedir="target/sqlxmlast" destdir="target/simple"
+              style="src/main/resources/xslt/simple.xsl" extension=".xml"
+              failOnError="false">
+            <factory name="net.sf.saxon.TransformerFactoryImpl"/>
+            <classpath location="${saxon.class.path}"/>
+            <filename name="**/*.xml"/>
+        </xslt>
+    </target>
+    <target name="validate">
+    	<xmlvalidate failonerror="no" lenient="yes">
+        <fileset dir="target/simple" includes="**/*.xml"/>
+      </xmlvalidate>
+    </target>
+    <target name="simple-test">
+        <xslt basedir="target/sqlxmlast-test" 
+        	    destdir="target/simple-test"
+              style="src/main/resources/xslt/simple.xsl" 
+              extension=".xml">
+            <factory name="net.sf.saxon.TransformerFactoryImpl"/>
+            <classpath location="${saxon.class.path}"/>
+            <filename name="**/*.xml"/>
+        </xslt>
+    </target>
+    
+    
+    <target name="sdp">
+    	 <record name="target/sdp.txt" action="start" append="false"/>
+       <sqlxmlast grammar="oracle" 
+       	          basedir="vortex-central/oracle/sdp"
+                  destdir="target/sqlxmlast/sdp"
+                  failontransformationerror="no">
+            <filename name="**/*.sql"/>
+        </sqlxmlast>
+        <record name="target/sdp.txt" action="stop"/>
+    </target>   
+    <target name="dsa">
+    	<record name="target/dsa.txt" action="start" append="false"/>
+       <sqlxmlast grammar="oracle" 
+       	          basedir="vortex-central/oracle/dsa"
+                  destdir="target/sqlxmlast/dsa"
+                  failontransformationerror="no">
+            <filename name="**/*.sql"/>
+        </sqlxmlast>
+        <record name="target/dsa.txt" action="stop"/>
+    </target>      
+    <target name="buss">
+    	 <record name="target/buss.txt" action="start" append="false"/>
+       <sqlxmlast grammar="oracle" 
+       	          basedir="vortex-central/oracle/buss"
+                  destdir="target/sqlxmlast/buss"
+                  failontransformationerror="no">
+            <filename name="**/*.sql"/>
+        </sqlxmlast>
+       <record name="target/buss.txt" action="stop"/>
+    </target>
+    <target name="cons">
+    	 <record name="target/cons.txt" action="start" append="false"/>
+       <sqlxmlast grammar="oracle" 
+       	          basedir="vortex-central/oracle/cons"
+                  destdir="target/sqlxmlast/cons"
+                  failontransformationerror="no">
+            <filename name="**/*.sql"/>
+        </sqlxmlast>
+        <record name="target/cons.txt" action="stop"/>
+    </target>
+</project>
